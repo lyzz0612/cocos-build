@@ -46,9 +46,12 @@ async function run(): Promise<void> {
       )
       await extractZip(`${ccZipPath}`, './')
       await exec(`open ./CocosCreator.app`)
-      await exec(
-        `./CocosCreator.app/Contents/MacOS/CocosCreator --path ${projectPath} --build "configPath=${configPath};"`
-      )
+      let cmdOptions = 'project'
+      if (parseInt(cocosVersion[0]) < 3) {
+        cmdOptions = 'path'
+      }
+      const command = `./CocosCreator.app/Contents/MacOS/CocosCreator --${cmdOptions} ${projectPath} --build "configPath=${configPath};"`
+      await exec(command)
       if (uploadArtifact) {
         const buildConfig = JSON.parse(fs.readFileSync(configPath).toString())
         const buildPath = buildConfig.buildPath.replace(

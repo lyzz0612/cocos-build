@@ -78,7 +78,12 @@ function run() {
                 const ccZipPath = yield tool_cache_1.downloadTool(darwin, `CocosCreator_V${version}.zip`);
                 yield tool_cache_1.extractZip(`${ccZipPath}`, './');
                 yield exec_1.exec(`open ./CocosCreator.app`);
-                yield exec_1.exec(`./CocosCreator.app/Contents/MacOS/CocosCreator --path ${projectPath} --build "configPath=${configPath};"`);
+                let cmdOptions = 'project';
+                if (parseInt(cocosVersion[0]) < 3) {
+                    cmdOptions = 'path';
+                }
+                const command = `./CocosCreator.app/Contents/MacOS/CocosCreator --${cmdOptions} ${projectPath} --build "configPath=${configPath};"`;
+                yield exec_1.exec(command);
                 if (uploadArtifact) {
                     const buildConfig = JSON.parse(fs_1.default.readFileSync(configPath).toString());
                     const buildPath = buildConfig.buildPath.replace('project://', projectPath);
