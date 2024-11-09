@@ -51,7 +51,15 @@ async function run(): Promise<void> {
         cmdOptions = 'path'
       }
       const command = `./CocosCreator.app/Contents/MacOS/CocosCreator --${cmdOptions} ${projectPath} --build "configPath=${configPath};"`
-      await exec(command)
+      try {
+        await exec(command)
+      } catch (error: any) {
+        if (error.toString().includes('36')) {
+          console.log('build success')
+        } else {
+          core.error(error as string)
+        }
+      }
       if (uploadArtifact) {
         const buildConfig = JSON.parse(fs.readFileSync(configPath).toString())
         const buildPath = buildConfig.buildPath.replace(

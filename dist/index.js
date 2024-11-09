@@ -83,7 +83,17 @@ function run() {
                     cmdOptions = 'path';
                 }
                 const command = `./CocosCreator.app/Contents/MacOS/CocosCreator --${cmdOptions} ${projectPath} --build "configPath=${configPath};"`;
-                yield exec_1.exec(command);
+                try {
+                    yield exec_1.exec(command);
+                }
+                catch (error) {
+                    if (error.toString().includes('36')) {
+                        console.log('build success');
+                    }
+                    else {
+                        core.error(error);
+                    }
+                }
                 if (uploadArtifact) {
                     const buildConfig = JSON.parse(fs_1.default.readFileSync(configPath).toString());
                     const buildPath = buildConfig.buildPath.replace('project://', projectPath);
