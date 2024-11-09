@@ -30,7 +30,7 @@ async function run(): Promise<void> {
     if (!projectPath.endsWith('/')) {
       projectPath = `${projectPath}/`
     }
-    const uploadArtifact = core.getInput('upload_artifact')
+    const uploadArtifact = Boolean(core.getInput('upload_artifact'))
     try {
       const {data} = await (await axios.get(downloadUrls)).data
       const urlList = data['2d'] as CCDownloadType[]

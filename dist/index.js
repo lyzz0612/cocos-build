@@ -66,7 +66,7 @@ function run() {
             if (!projectPath.endsWith('/')) {
                 projectPath = `${projectPath}/`;
             }
-            const uploadArtifact = core.getInput('upload_artifact');
+            const uploadArtifact = Boolean(core.getInput('upload_artifact'));
             try {
                 const { data } = yield (yield axios_1.default.get(downloadUrls)).data;
                 const urlList = data['2d'];
