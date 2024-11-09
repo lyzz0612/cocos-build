@@ -1,6 +1,6 @@
-name: 'Cocos Creator Build'
-description: 'A github action for cocos creator build'
-author: 'miggene'
+name: 'Cocos Creator Build Use ConfigPath'
+description: 'A github action for cocos creator build use ConfigPath'
+author: 'lyzz0612'
 branding:
   icon: activity
   color: blue

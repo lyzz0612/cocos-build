@@ -7,12 +7,16 @@
  * @FilePath: /cocos-build/README.md
 -->
 
-# Cocos Creator Build
+# Cocos Creator Build Use ConfigPath
+
+This action is forked from [https://github.com/miggene/cocos-build](cocos-build)，the difference is:
+1. only support configPath
+2. upload artifact is a option now
 
 This action provides the following functionality for Github Actions users:
 
 - automate building for cocos creator project
-- configuring cocos_download_url, cocos-version, cocos_type, project_path, platform, build_path for building
+- configuring cocos_download_url, cocos-version, project_path, config_path, upload_artifact for building
 - only run on mac
 
 | inputs             | required | description                 | default                                                                |
@@ -32,9 +36,7 @@ See [action.yml]()
 ```
 steps:
     - uses: actions/checkout@v2
-    - name: Cocos Creator Build
-    uses: miggene/cocos-build@v1.2.3
-    with:
-        cocos_version: 2.4.5
-        config_path: ./web-desktop.json
+    - uses: lyzz0612/cocos-build@v1.0.0
+    	with:
+        	config_path: ./web-desktop.json
 ```
