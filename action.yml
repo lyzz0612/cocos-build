@@ -13,27 +13,22 @@ inputs:
   cocos_version:
     required: false
     description: 'cocos creator version'
-    default: '0.0.0'
-
-  cocos_type:
-    required: false
-    description: 'cocos creator type(2d/3d)'
-    default: '2d'
+    default: '3.8.4'
 
   project_path:
     required: false
     description: 'project path for build'
     default: './'
 
-  platform:
-    required: false
-    description: 'platform to build'
-    default: 'web-mobile'
+  config_path :
+    required: true
+    description: 'config path for build'
+    default: './web-desktop.json'
 
-  build_path:
+  upload_artifact :
     required: false
-    description: 'build path'
-    default: './build'
+    description: 'whether upload artifact'
+    default: true
 
 runs:
   using: 'node12'

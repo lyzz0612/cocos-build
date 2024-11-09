@@ -18,11 +18,10 @@ This action provides the following functionality for Github Actions users:
 | inputs             | required | description                 | default                                                                |
 | ------------------ | -------- | --------------------------- | ---------------------------------------------------------------------- |
 | cocos_download_url | false    | cocos creator download urls | https://creator-api.cocos.com/api/cocoshub/editor_version_list?lang=zh |
-| cocos_version      | false    | cocos creator version       | 0.0.0                                                                  |
-| cocos_type         | false    | cocos creator type(2d/3d)   | 2d                                                                     |
-| project_path       | False    | project path for build      | ./                                                                     |
-| platform           | false    | platform to build           | web-mobile                                                             |
-| build_path         | false    | build path                  | ./build                                                                |
+| cocos_version      | false    | cocos creator version       | 3.8.4                                                                  |
+| config_path         | true    | cocos creator build config path   | ./web-desktop.json                                                                     |
+| project_path       | false    | project path for build      | ./                                                                     |
+| upload_artifact    | false    | whether upload artifact  | true                                                             |
 
 ## Usage
 
@@ -37,4 +36,5 @@ steps:
     uses: miggene/cocos-build@v1.2.3
     with:
         cocos_version: 2.4.5
+        config_path: ./web-desktop.json
 ```

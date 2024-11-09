@@ -15,6 +15,7 @@ import {exec} from '@actions/exec'
 import {downloadTool, extractZip} from '@actions/tool-cache'
 import * as artifact from '@actions/artifact'
 import * as glob from '@actions/glob'
+import fs from 'fs'
 
 // import {wait} from './wait'
 
@@ -24,13 +25,15 @@ async function run(): Promise<void> {
   try {
     const downloadUrls = core.getInput('cocos_download_url')
     const cocosVersion = core.getInput('cocos_version')
-    const cocosType = core.getInput('cocos_type')
-    const projectPath = core.getInput('project_path')
-    const platform = core.getInput('platform')
-    const buildPath = core.getInput('build_path')
+    const configPath = core.getInput('config_path')
+    let projectPath = core.getInput('project_path')
+    if (!projectPath.endsWith('/')) {
+      projectPath = `${projectPath}/`
+    }
+    const uploadArtifact = core.getInput('upload_artifact')
     try {
       const {data} = await (await axios.get(downloadUrls)).data
-      const urlList = data[cocosType] as CCDownloadType[]
+      const urlList = data['2d'] as CCDownloadType[]
       const {version, darwin} =
         cocosVersion === '0.0.0'
           ? urlList[0]
@@ -44,27 +47,31 @@ async function run(): Promise<void> {
       await extractZip(`${ccZipPath}`, './')
       await exec(`open ./CocosCreator.app`)
       await exec(
-        `./CocosCreator.app/Contents/MacOS/CocosCreator --path ${projectPath} --build "platform=${platform};buildPath=${buildPath}"`
+        `./CocosCreator.app/Contents/MacOS/CocosCreator --path ${projectPath} --build "configPath=${configPath};"`
       )
-      const artifactClient = artifact.create()
-      const artifactName = 'cocos-build-package'
-      const patterns = `${buildPath}/${platform}`
-      const globber = await glob.create(patterns)
-      const files = await globber.glob()
-      console.log('files :>> ', files)
+      if (uploadArtifact) {
+        const buildConfig = JSON.parse(fs.readFileSync(configPath).toString())
+        const buildPath = buildConfig.buildPath.replace(
+          'project://',
+          projectPath
+        )
+        const platform = buildConfig.platform
+        const artifactClient = artifact.create()
+        const artifactName = 'cocos-build-package'
+        const patterns = `${buildPath}/${platform}`
+        const globber = await glob.create(patterns)
+        const files = await globber.glob()
+        console.log('files :>> ', files)
 
-      const rootDirectory = `${buildPath}`
-      // const options = {
-      //   continueOnError: true
-      // }
+        const rootDirectory = `${buildPath}`
 
-      const uploadResult = await artifactClient.uploadArtifact(
-        artifactName,
-        files,
-        rootDirectory
-        // options
-      )
-      console.log('uploadResult :>> ', uploadResult)
+        const uploadResult = await artifactClient.uploadArtifact(
+          artifactName,
+          files,
+          rootDirectory
+        )
+        console.log('uploadResult :>> ', uploadResult)
+      }
     } catch (error) {
       core.error(error as string)
     }
